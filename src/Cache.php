@@ -35,7 +35,7 @@ class Cache
     public function get_url_hash($url = null)
     {
         if (is_null($url)) {
-            $host = $_SERVER['HTTP_HOST'];
+            $host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['WP_HOME'];
             $uri = parse_url($_SERVER['REQUEST_URI']);
         } else {
             $uri = parse_url(sanitize_url($url));
