@@ -34,4 +34,4 @@ function tailpress_log($message)
     error_log(print_r($message, true));
 }
 
-(new Plugin(__FILE__, '0.4.3'))->boot();
+(new Plugin(__FILE__, '0.4.4'))->boot();
