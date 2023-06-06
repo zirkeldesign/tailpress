@@ -109,7 +109,7 @@ class Plugin
         ";
 
         return [
-            'main' => $this->assets_js . 'twind.cdn.1.0.5.js',
+            'main' => $this->assets_js . 'twind.cdn.1.0.8.js',
             'setup' => $setup_script
         ];
     }

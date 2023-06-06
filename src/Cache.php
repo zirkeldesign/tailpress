@@ -35,7 +35,7 @@ class Cache
     public function get_url_hash($url = null)
     {
         if (is_null($url)) {
-            $host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['WP_HOME'];
+            $host = $_SERVER['HTTP_HOST'] ?? $_SERVER['WP_HOME'];
             $uri = parse_url($_SERVER['REQUEST_URI']);
         } else {
             $uri = parse_url(sanitize_url($url));
@@ -45,6 +45,14 @@ class Cache
         $path = $uri['path'];
         $query = $uri['query'] ?? '';
 
+        // If path is wp-json, wp-admin or wp-cron, don't cache
+        if (strpos($path, 'wp-json') !== false
+            || strpos($path, 'wp-admin') !== false
+            || strpos($path, 'wp-cron.php') !== false
+        ) {
+            return null;
+        }
+
         return md5($host . $path . $query);
     }
 
@@ -53,15 +61,23 @@ class Cache
         return $this->plugin;
     }
 
-    public function get_css_path()
+    public function get_css_path(): ?array
     {
         $hash = $this->get_url_hash();
-        $files = glob("{$this->dir}/{$hash}.*.css");
-        if (!isset($files[0]) || !file_exists($files[0])) {
+
+        if (!$hash) {
             return null;
         }
 
-        return $files[0];
+        $files = glob("{$this->dir}/{$hash}.*.css");
+
+        if (!$files
+            || empty($files)
+        ) {
+            return null;
+        }
+
+        return (array) $files;
     }
 
     public function get_dir()

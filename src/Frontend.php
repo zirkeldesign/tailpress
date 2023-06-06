@@ -23,21 +23,26 @@ class Frontend
         $this->cache = new Cache($this->plugin);
     }
 
-    public function enqueue_scripts()
+    public function enqueue_scripts(): void
     {
-        if ($css_path = $this->cache->get_css_path()) {
-            add_action('wp_head', function () use ($css_path) {
-                echo sprintf(
-                    '<style id="%s">%s</style>',
-                    esc_attr($this->plugin->name),
-                    file_get_contents($css_path)
-                );
+        $css_paths = $this->cache->get_css_path();
+        if ($css_paths) {
+            add_action('wp_head', function () use ($css_paths) {
+                foreach ($css_paths as $i => $css_path) {
+                    echo sprintf(
+                        '<style id="%s">%s</style>',
+                        esc_attr($this->plugin->name) . '-' . $i,
+                        file_get_contents($css_path)
+                    );
+                }
             }, 50);
-        } else {
-            $scripts = $this->plugin->get_client_scripts();
-            $name = $this->plugin->name . '_twind';
-            wp_enqueue_script($name, $scripts['main']);
-            wp_add_inline_script($name, $scripts['setup']);
+
+            return;
         }
+
+        $scripts = $this->plugin->get_client_scripts();
+        $name = $this->plugin->name . '_twind';
+        wp_enqueue_script($name, $scripts['main']);
+        wp_add_inline_script($name, $scripts['setup']);
     }
 }
