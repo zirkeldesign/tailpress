@@ -1,7 +1,7 @@
 {
     "name": "freshbrewedweb/tailpress",
     "description": "WordPress Plugin to integrate Tailwind",
-    "type": "library",
+    "type": "wordpress-plugin",
     "autoload": {
         "psr-4": {
             "FreshBrewedWeb\\Tailpress\\": "src/"
